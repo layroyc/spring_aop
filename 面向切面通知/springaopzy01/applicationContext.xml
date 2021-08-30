@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+    >
+    <!--切面对象   次要业务对象-->
+    <bean id="messageAspect" class="springaopzy01.MessageAspect"></bean>
+    <!--目标对象   主要业务对象-->
+    <bean id="videoService" class="springaopzy01.VideoServiceImpl"></bean>
+
+    <aop:config>
+        <aop:pointcut id="msgPc" expression="execution(* springaopzy01.VideoService.*(..))"/>
+        <aop:aspect id="msgAspect" ref="messageAspect">
+            <!--切面   通知分为：前置before、后置after-returning、环绕around、异常after-throwing、最后-->
+
+            <!--<aop:before method="bofangMsg" pointcut-ref="msgPc"/>-->
+            <!--<aop:after-returning method="stopMsg" pointcut-ref="msgPc"/>-->
+            <!--<aop:around method="roundMsg" pointcut-ref="msgPc"/>-->
+            <aop:after-throwing method="sendMsgError" pointcut-ref="msgPc" throwing="e"/>
+            <aop:after method="finallyMsg" pointcut-ref="msgPc"/>
+        </aop:aspect>
+    </aop:config>
+</beans>
